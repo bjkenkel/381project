@@ -1,0 +1,146 @@
+U:/CPRE381/projA/dmem.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/dmem.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package std_logic_arith
+-- Loading package STD_LOGIC_UNSIGNED
+-- Compiling entity dmem
+-- Compiling architecture behavioral of dmem
+
+} {} {}} U:/CPRE381/projA/projA.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/projA.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Compiling entity projA
+-- Compiling architecture bdf_type of projA
+
+} {} {}} U:/CPRE381/projA/and_2.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/and_2.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity and_2
+-- Compiling architecture mixed of and_2
+
+} {} {}} U:/CPRE381/projA/mux21_1bit.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/mux21_1bit.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity mux21_1bit
+-- Compiling architecture mixed of mux21_1bit
+
+} {} {}} U:/CPRE381/projA/main_control.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/main_control.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity main_control
+-- Compiling architecture mixed of main_control
+
+} {} {}} U:/CPRE381/projA/pc_reg.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/pc_reg.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity PC_reg
+-- Compiling architecture mixed of PC_reg
+
+} {} {}} U:/CPRE381/projA/mux21_5bit.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/mux21_5bit.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity mux21_5bit
+-- Compiling architecture mixed of mux21_5bit
+
+} {} {}} U:/CPRE381/projA/sign_extender_16_32.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/sign_extender_16_32.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity sign_extender_16_32
+-- Compiling architecture mixed of sign_extender_16_32
+
+} {} {}} U:/CPRE381/projA/ALU.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/ALU.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity ALU
+-- Compiling architecture mixed of ALU
+
+} {} {}} U:/CPRE381/projA/register_file.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/register_file.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity register_file
+-- Compiling architecture mixed of register_file
+
+} {} {}} U:/CPRE381/projA/sll_2.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/sll_2.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity sll_2
+-- Compiling architecture mixed of sll_2
+
+} {} {}} U:/CPRE381/projA/adder_32.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/adder_32.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity adder_32
+-- Compiling architecture mixed of adder_32
+
+} {} {}} U:/CPRE381/projA/add4.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/add4.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity add4
+-- Compiling architecture mixed of add4
+
+} {} {}} U:/CPRE381/projA/combine.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/combine.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity combine
+-- Compiling architecture mixed of combine
+
+} {} {}} U:/CPRE381/projA/imem.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/imem.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package std_logic_arith
+-- Loading package STD_LOGIC_UNSIGNED
+-- Compiling entity imem
+-- Compiling architecture behavioral of imem
+
+} {} {}} U:/CPRE381/projA/mux21_32bit.vhd {1 {vcom -work work -2002 -explicit -vopt -stats=none U:/CPRE381/projA/mux21_32bit.vhd
+Model Technology ModelSim SE-64 vcom 10.5b Compiler 2016.05 May 21 2016
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity mux21_32bit
+-- Compiling architecture mixed of mux21_32bit
+
+} {} {}}

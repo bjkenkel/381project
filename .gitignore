@@ -5,6 +5,7 @@
 */timing/
 */testbench/
 */*_sim/
+work/_*
 incremental_db/
 db/
 output_files/

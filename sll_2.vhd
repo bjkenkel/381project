@@ -11,7 +11,6 @@ entity sll_2 is
 architecture mixed of sll_2 is 
 
 begin
-
 o_shifted(31 downto 2) <= i_to_shift(29 downto 0);
 o_shifted(1 downto 0) <= "00";
 
