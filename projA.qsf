@@ -42,6 +42,16 @@ set_global_assignment -name TOP_LEVEL_ENTITY projA
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.0.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "17:06:30  OCTOBER 18, 2018"
 set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Standard Edition"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VHDL_FILE ex_mem.vhd
+set_global_assignment -name VHDL_FILE mem_wb.vhd
+set_global_assignment -name VHDL_FILE id_ex.vhd
+set_global_assignment -name VHDL_FILE pipeline_register_template.vhd
+set_global_assignment -name VHDL_FILE if_id.vhd
+set_global_assignment -name VHDL_FILE branch_comparator.vhd
 set_global_assignment -name VHDL_FILE mux21_32bit.vhd
 set_global_assignment -name VHDL_FILE sign_extender_16_32.vhd
 set_global_assignment -name VHDL_FILE dmem.vhd
@@ -55,10 +65,6 @@ set_global_assignment -name VHDL_FILE imem.vhd
 set_global_assignment -name VHDL_FILE sll_2.vhd
 set_global_assignment -name VHDL_FILE and_2.vhd
 set_global_assignment -name VHDL_FILE ALU.vhd
-set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 set_global_assignment -name BDF_FILE projA.bdf
 set_global_assignment -name VHDL_FILE add4.vhd
 set_global_assignment -name VHDL_FILE combine.vhd
