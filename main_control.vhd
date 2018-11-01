@@ -61,7 +61,7 @@ begin
 			o_mem_to_reg <= '0';
 			o_ALU_op <= "0001";
 			o_mem_write <= '0';
-			o_ALU_src <= '1';
+			o_ALU_src <= '0';
 			o_reg_write <= '1';	
 
 		when "100011" => ---- LW

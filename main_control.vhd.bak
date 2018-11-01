@@ -53,11 +53,58 @@ begin
 			  	    o_mem_write <= '0';
 			  	    o_ALU_src <= '0';
 			  	    o_reg_write <= '0';
-			end case;			  	
+			end case;
+		when "000100" => ---- BEQ
+			o_reg_dest <= '0';
+			o_jump <= '0';
+			o_branch <= '1';
+			o_mem_to_reg <= '0';
+			o_ALU_op <= "0001";
+			o_mem_write <= '0';
+			o_ALU_src <= '1';
+			o_reg_write <= '1';	
 
-		-- when "001000" => -- ADDI
+		when "100011" => ---- LW
+			o_reg_dest <= '0';
+			o_jump <= '0';
+			o_branch <= '0';
+			o_mem_to_reg <= '1';
+			o_ALU_op <= "0000";
+			o_mem_write <= '0';
+			o_ALU_src <= '1';
+			o_reg_write <= '1';	
 
-	  	-- TODO: add new instruction cases here
+		when "001000" => ---- ADDi
+			o_reg_dest <= '0';
+			o_jump <= '0';
+			o_branch <= '0';
+			o_mem_to_reg <= '0';
+			o_ALU_op <= "0000";
+			o_mem_write <= '0';
+			o_ALU_src <= '1';
+			o_reg_write <= '1';		
+
+		when "000010" => ---- j
+			o_reg_dest <= '0';
+			o_jump <= '1';
+			o_branch <= '0';
+			o_mem_to_reg <= '0';
+			o_ALU_op <= "0000";
+			o_mem_write <= '0';
+			o_ALU_src <= '0';
+			o_reg_write <= '0';		
+
+		when "101011" => ---- SW
+			o_reg_dest <= '0';
+			o_jump <= '0';
+			o_branch <= '0';
+			o_mem_to_reg <= '0';
+			o_ALU_op <= "0000";
+			o_mem_write <= '1';
+			o_ALU_src <= '1';
+			o_reg_write <= '0';	  	
+
+		
 
 	  	when others => -- any other cases are unimplemented instructions (defaults them to NOOP)
 			o_reg_dest <= '0';
