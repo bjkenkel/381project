@@ -1,8 +1,96 @@
+vcom -reportprogress 300 -work work U:/CPRE381/projA/projA.vhd
+vsim -gui -novopt work.proja
 add wave -position insertpoint  \
-sim:/proja/b2v_inst4/registers
+sim:/proja/i_CLK \
+sim:/proja/i_RESET \
+sim:/proja/branch_taken \
+sim:/proja/combined_next_pc \
+sim:/proja/ex_branch \
+sim:/proja/ex_extended_immediate \
+sim:/proja/ex_extended_immediate_sll2 \
+sim:/proja/if_instruction \
+sim:/proja/id_instruction \
+sim:/proja/ex_instruction \
+sim:/proja/ex_instruction_sll2 \
+sim:/proja/ex_jump \
+sim:/proja/ex_mem_to_reg \
+sim:/proja/ex_rd_sel \
+sim:/proja/ex_reg_dest \
+sim:/proja/ex_rs_data \
+sim:/proja/ex_rs_sel \
+sim:/proja/ex_rt_sel \
+sim:/proja/mem_write_reg_sel \
+sim:/proja/wb_write_reg_sel \
+sim:/proja/ex_write_reg_sel \
+sim:/proja/forward_A \
+sim:/proja/forward_B \
+sim:/proja/hazard_o_stall_pc \
+sim:/proja/hazard_o_flush_if_id \
+sim:/proja/hazard_o_stall_if_id \
+sim:/proja/hazard_o_flush_id_ex \
+sim:/proja/id_branch \
+sim:/proja/id_jump \
+sim:/proja/id_mem_to_reg \
+sim:/proja/id_mem_we \
+sim:/proja/mem_mem_we \
+sim:/proja/id_reg_dest \
+sim:/proja/id_reg_write \
+sim:/proja/ex_reg_write \
+sim:/proja/mem_reg_write \
+sim:/proja/wb_reg_write \
+sim:/proja/id_rs_data \
+sim:/proja/id_rt_data \
+sim:/proja/ex_rt_data \
+sim:/proja/mem_rt_data \
+sim:/proja/if_pc_plus_4 \
+sim:/proja/id_pc_plus_4 \
+sim:/proja/ex_pc_plus_4 \
+sim:/proja/in_next_pc \
+sim:/proja/ALU_in_A \
+sim:/proja/ALU_in_B \
+sim:/proja/id_ALU_op \
+sim:/proja/ex_ALU_op \
+sim:/proja/id_ALU_src \
+sim:/proja/ex_ALU_src \
+sim:/proja/ex_ALU_out \
+sim:/proja/mem_ALU_out \
+sim:/proja/wb_ALU_out \
+sim:/proja/mem_dmem_out \
+sim:/proja/wb_dmem_out \
+sim:/proja/wb_mux_out \
+sim:/proja/o_branch_comparator \
+sim:/proja/o_PC \
+sim:/proja/b2v_inst4/registers \
+sim:/proja/b2v_inst10/mem \
+sim:/proja/SYNTHESIZED_WIRE_32 \
+sim:/proja/SYNTHESIZED_WIRE_33 \
+sim:/proja/SYNTHESIZED_WIRE_2 \
+sim:/proja/SYNTHESIZED_WIRE_3 \
+sim:/proja/SYNTHESIZED_WIRE_4 \
+sim:/proja/SYNTHESIZED_WIRE_5 \
+sim:/proja/SYNTHESIZED_WIRE_6 \
+sim:/proja/SYNTHESIZED_WIRE_7 \
+sim:/proja/SYNTHESIZED_WIRE_8 \
+sim:/proja/SYNTHESIZED_WIRE_9 \
+sim:/proja/SYNTHESIZED_WIRE_10 \
+sim:/proja/SYNTHESIZED_WIRE_11 \
+sim:/proja/SYNTHESIZED_WIRE_34 \
+sim:/proja/SYNTHESIZED_WIRE_16 \
+sim:/proja/SYNTHESIZED_WIRE_17 \
+sim:/proja/SYNTHESIZED_WIRE_18 \
+sim:/proja/SYNTHESIZED_WIRE_19 \
+sim:/proja/SYNTHESIZED_WIRE_20 \
+sim:/proja/SYNTHESIZED_WIRE_21 \
+sim:/proja/SYNTHESIZED_WIRE_23 \
+sim:/proja/SYNTHESIZED_WIRE_24 \
+sim:/proja/SYNTHESIZED_WIRE_25 \
+sim:/proja/SYNTHESIZED_WIRE_26 \
+sim:/proja/SYNTHESIZED_WIRE_27 \
+sim:/proja/SYNTHESIZED_WIRE_29 \
+sim:/proja/SYNTHESIZED_WIRE_30 \
+sim:/proja/SYNTHESIZED_WIRE_31
 force -freeze sim:/proja/i_CLK 1 0, 0 {50 ns} -r 100
 force -freeze sim:/proja/i_RESET 1 0
-run
-run
-run
+run 400
 force -freeze sim:/proja/i_RESET 0 0
+run 500

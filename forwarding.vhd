@@ -3,53 +3,34 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 entity forwarding is
-port( 	CLK			:in std_logic;
-	wb_reg_write		:in  std_logic;
-	ex_reg_write  		:in std_logic;
-	id_ex_register_rs	:in std_logic_vector (4 downto 0); 
-	id_ex_register_rt	:in std_logic_vector (4 downto 0); 
-	ex_mem_register_rd	:in std_logic_vector (4 downto 0);
-	mem_wb_register_rd	:in std_logic_vector (4 downto 0);
-	forward_A		:out std_logic_vector (1 downto 0);
-	forward_B		:out std_logic_vector (1 downto 0)
-);
-end forwarding; 
-architecture mixed of forwarding is 
-begin
-
-forward_check: process(CLK)
-begin
-
-	if(ex_reg_write  ='1' and id_ex_register_rs = ex_mem_register_rd and ex_mem_register_rd > "00000") then --checks 1 away for Rt
-		
-		forward_A <= "10";
-
-	elsif(wb_reg_write ='1' and id_ex_register_rs = mem_wb_register_rd and mem_wb_register_rd > "00000") then--checks 2 away for Rt
-
-		forward_A <= "01";
-
-	else 
-		forward_A <="00";--neither
-		
-	end if;
-		
-	if(ex_reg_write  ='1' and id_ex_register_rt = ex_mem_register_rd and ex_mem_register_rd > "00000") then --checks 1 away for Rs
-
-		forward_B <= "10";
-
-	elsif(wb_reg_write ='1' and id_ex_register_rt = mem_wb_register_rd and mem_wb_register_rd > "00000") then --checks 2 away for Rs
-
-		forward_B <= "01";
-
-	else 
-		
-		forward_B <="00";	--neither 
-	
-	end if;
-end process forward_check;
-end mixed; 
-
+	port(
+			ex_rs_sel : in std_logic_vector(4 downto 0);
+			ex_rt_sel : in std_logic_vector(4 downto 0);
+			mem_write_reg_sel : in std_logic_vector(4 downto 0);
+			wb_write_reg_sel : in std_logic_vector(4 downto 0);
+			wb_reg_write : in std_logic;
+			mem_reg_write : in std_logic;
+			rs_mux_sel : out std_logic_vector(1 downto 0);
+			rt_mux_sel : out std_logic_vector(1 downto 0)
+		);
+ end forwarding;
  
+ architecture mixed of forwarding is
+ begin
+ 
+		rs_mux_sel <= "10" 
+		when ((ex_rs_sel = mem_write_reg_sel) and (mem_reg_write = '1')	and (not (mem_write_reg_sel = "00000"))) 
+		else
+			"01" when ((ex_rs_sel = wb_write_reg_sel) and (wb_reg_write = '1') and (not (wb_write_reg_sel = "00000"))) 
+		else
+			"00";
+							 
+							 
+		rt_mux_sel <= "10" 
+		when ((ex_rt_sel = mem_write_reg_sel) and (mem_reg_write = '1') and (not (mem_write_reg_sel = "00000"))) 
+		else
+			"01" when ((ex_rt_sel = wb_write_reg_sel) and (wb_reg_write = '1') and (not (wb_write_reg_sel = "00000"))) 
+		else
+			"00";
 
-
-		
+end mixed;
