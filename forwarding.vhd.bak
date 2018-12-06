@@ -39,11 +39,11 @@ entity forwarding is
 			"00";
 
 		branch_rs_mux_sel <= '1'
-		when ((id_rs_sel = mem_write_reg_sel) and (mem_reg_write = '1')  and (not(mem_write_reg_sel = "00000")))
+		when ((id_rt_sel = mem_write_reg_sel) and (ex_reg_write = '1')  and (not(mem_write_reg_sel = "00000")))
 		else 
 			'0';
 		branch_rt_mux_sel <= '1'
-		when ((id_rt_sel = mem_write_reg_sel) and (mem_reg_write = '1') and (not(mem_write_reg_sel = "00000")))
+		when ((id_rs_sel = mem_write_reg_sel) and (ex_reg_write = '1') and (not(mem_write_reg_sel = "00000")))
 		else
 			'0';
 

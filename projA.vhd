@@ -14,7 +14,7 @@
 
 -- PROGRAM		"Quartus Prime"
 -- VERSION		"Version 18.0.0 Build 614 04/24/2018 SJ Standard Edition"
--- CREATED		"Mon Dec 03 17:24:16 2018"
+-- CREATED		"Thu Dec 06 17:25:48 2018"
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all; 
@@ -239,18 +239,6 @@ COMPONENT id_ex
 	);
 END COMPONENT;
 
-COMPONENT forwarding
-	PORT(wb_reg_write : IN STD_LOGIC;
-		 mem_reg_write : IN STD_LOGIC;
-		 ex_rs_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-		 ex_rt_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-		 mem_write_reg_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-		 wb_write_reg_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-		 rs_mux_sel : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
-		 rt_mux_sel : OUT STD_LOGIC_VECTOR(1 DOWNTO 0)
-	);
-END COMPONENT;
-
 COMPONENT register_file
 	PORT(CLK : IN STD_LOGIC;
 		 w_en : IN STD_LOGIC;
@@ -280,6 +268,23 @@ COMPONENT hazard
 	);
 END COMPONENT;
 
+COMPONENT forwarding
+	PORT(wb_reg_write : IN STD_LOGIC;
+		 mem_reg_write : IN STD_LOGIC;
+		 ex_reg_write : IN STD_LOGIC;
+		 ex_rs_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+		 ex_rt_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+		 id_rs_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+		 id_rt_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+		 mem_write_reg_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+		 wb_write_reg_sel : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+		 branch_rs_mux_sel : OUT STD_LOGIC;
+		 branch_rt_mux_sel : OUT STD_LOGIC;
+		 rs_mux_sel : OUT STD_LOGIC_VECTOR(1 DOWNTO 0);
+		 rt_mux_sel : OUT STD_LOGIC_VECTOR(1 DOWNTO 0)
+	);
+END COMPONENT;
+
 COMPONENT pc_reg
 	PORT(CLK : IN STD_LOGIC;
 		 reset : IN STD_LOGIC;
@@ -298,16 +303,17 @@ END COMPONENT;
 
 SIGNAL	ALU_in_A :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	ALU_in_B :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	branch_comparator_in_rs :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	branch_comparator_in_rt :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	branch_or_jump :  STD_LOGIC;
 SIGNAL	branch_taken :  STD_LOGIC;
-SIGNAL	combined_next_pc :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	combined_next_jump_pc :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	ex_ALU_op :  STD_LOGIC_VECTOR(3 DOWNTO 0);
 SIGNAL	ex_ALU_out :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	ex_ALU_src :  STD_LOGIC;
 SIGNAL	ex_extended_immediate :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	ex_extended_immediate_sll2 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	ex_instruction :  STD_LOGIC_VECTOR(31 DOWNTO 0);
-SIGNAL	ex_instruction_sll2 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
-SIGNAL	ex_jump :  STD_LOGIC;
 SIGNAL	ex_mem_to_reg :  STD_LOGIC;
 SIGNAL	ex_mem_write :  STD_LOGIC;
 SIGNAL	ex_pc_plus_4 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -316,16 +322,22 @@ SIGNAL	ex_reg_dest :  STD_LOGIC;
 SIGNAL	ex_reg_write :  STD_LOGIC;
 SIGNAL	ex_rs_data :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	ex_rs_sel :  STD_LOGIC_VECTOR(4 DOWNTO 0);
-SIGNAL	ex_rt_data :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	ex_rt_data_before_fu :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	ex_rt_sel :  STD_LOGIC_VECTOR(4 DOWNTO 0);
 SIGNAL	ex_write_reg_sel :  STD_LOGIC_VECTOR(4 DOWNTO 0);
 SIGNAL	forward_A :  STD_LOGIC_VECTOR(1 DOWNTO 0);
 SIGNAL	forward_B :  STD_LOGIC_VECTOR(1 DOWNTO 0);
+SIGNAL	forwarding_branch_rs :  STD_LOGIC;
+SIGNAL	forwarding_branch_rt :  STD_LOGIC;
+SIGNAL	hazards_id_ex_flush :  STD_LOGIC;
+SIGNAL	hazards_if_id_flush :  STD_LOGIC;
+SIGNAL	hazards_if_id_stall :  STD_LOGIC;
 SIGNAL	hazards_pc_stall :  STD_LOGIC;
 SIGNAL	id_ALU_op :  STD_LOGIC_VECTOR(3 DOWNTO 0);
 SIGNAL	id_ALU_src :  STD_LOGIC;
 SIGNAL	id_branch :  STD_LOGIC;
 SIGNAL	id_instruction :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	id_instruction_sll2 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	id_jump :  STD_LOGIC;
 SIGNAL	id_mem_to_reg :  STD_LOGIC;
 SIGNAL	id_mem_we :  STD_LOGIC;
@@ -336,17 +348,24 @@ SIGNAL	id_rs_data :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	id_rt_data :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	if_instruction :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	if_pc_plus_4 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
-SIGNAL	in_next_pc :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	mem_ALU_out :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	mem_dmem_out :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	mem_instruction :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	mem_mem_to_reg :  STD_LOGIC;
 SIGNAL	mem_mem_we :  STD_LOGIC;
+SIGNAL	mem_pc_plus_4 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	mem_reg_dest :  STD_LOGIC;
 SIGNAL	mem_reg_write :  STD_LOGIC;
 SIGNAL	mem_rt_data :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	mem_write_reg_sel :  STD_LOGIC_VECTOR(4 DOWNTO 0);
+SIGNAL	next_PC :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	next_pc_if_branch :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	next_pc_jump_or_branch :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	o_branch_comparator :  STD_LOGIC;
 SIGNAL	o_PC :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	wb_ALU_out :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	wb_dmem_out :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	wb_mem_to_reg :  STD_LOGIC;
 SIGNAL	wb_mux_out :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	wb_reg_write :  STD_LOGIC;
 SIGNAL	wb_write_reg_sel :  STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -354,26 +373,15 @@ SIGNAL	SYNTHESIZED_WIRE_0 :  STD_LOGIC;
 SIGNAL	SYNTHESIZED_WIRE_1 :  STD_LOGIC_VECTOR(0 TO 3);
 SIGNAL	SYNTHESIZED_WIRE_2 :  STD_LOGIC_VECTOR(0 TO 31);
 SIGNAL	SYNTHESIZED_WIRE_3 :  STD_LOGIC_VECTOR(0 TO 3);
-SIGNAL	SYNTHESIZED_WIRE_4 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_29 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
-SIGNAL	SYNTHESIZED_WIRE_6 :  STD_LOGIC_VECTOR(0 TO 3);
-SIGNAL	SYNTHESIZED_WIRE_7 :  STD_LOGIC_VECTOR(0 TO 4);
-SIGNAL	SYNTHESIZED_WIRE_8 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_9 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_30 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_31 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
-SIGNAL	SYNTHESIZED_WIRE_15 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_16 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_17 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
 SIGNAL	SYNTHESIZED_WIRE_18 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
-SIGNAL	SYNTHESIZED_WIRE_19 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	SYNTHESIZED_WIRE_5 :  STD_LOGIC_VECTOR(0 TO 3);
+SIGNAL	SYNTHESIZED_WIRE_6 :  STD_LOGIC_VECTOR(0 TO 4);
+SIGNAL	SYNTHESIZED_WIRE_19 :  STD_LOGIC;
 SIGNAL	SYNTHESIZED_WIRE_20 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
-SIGNAL	SYNTHESIZED_WIRE_22 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_23 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_25 :  STD_LOGIC;
-SIGNAL	SYNTHESIZED_WIRE_26 :  STD_LOGIC_VECTOR(4 DOWNTO 0);
-SIGNAL	SYNTHESIZED_WIRE_27 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
-SIGNAL	SYNTHESIZED_WIRE_28 :  STD_LOGIC_VECTOR(0 TO 4);
+SIGNAL	SYNTHESIZED_WIRE_12 :  STD_LOGIC_VECTOR(31 DOWNTO 0);
+SIGNAL	SYNTHESIZED_WIRE_14 :  STD_LOGIC;
+SIGNAL	SYNTHESIZED_WIRE_16 :  STD_LOGIC_VECTOR(4 DOWNTO 0);
+SIGNAL	SYNTHESIZED_WIRE_17 :  STD_LOGIC_VECTOR(0 TO 4);
 
 
 BEGIN 
@@ -381,11 +389,11 @@ SYNTHESIZED_WIRE_0 <= '0';
 SYNTHESIZED_WIRE_1 <= "1111";
 SYNTHESIZED_WIRE_2 <= "00000000000000000000000000000000";
 SYNTHESIZED_WIRE_3 <= "1111";
-SYNTHESIZED_WIRE_6 <= "0000";
-SYNTHESIZED_WIRE_7 <= "00000";
-SYNTHESIZED_WIRE_30 <= '0';
-SYNTHESIZED_WIRE_23 <= '0';
-SYNTHESIZED_WIRE_28 <= "00000";
+SYNTHESIZED_WIRE_5 <= "0000";
+SYNTHESIZED_WIRE_6 <= "00000";
+SYNTHESIZED_WIRE_19 <= '0';
+SYNTHESIZED_WIRE_14 <= '0';
+SYNTHESIZED_WIRE_17 <= "00000";
 
 
 
@@ -393,7 +401,7 @@ b2v_inst : mux21_5bit
 PORT MAP(i_sel => ex_reg_dest,
 		 i_0 => ex_rt_sel,
 		 i_1 => ex_rd_sel,
-		 o_mux => SYNTHESIZED_WIRE_26);
+		 o_mux => SYNTHESIZED_WIRE_16);
 
 
 b2v_inst1 : imem
@@ -422,7 +430,7 @@ PORT MAP(clock => i_CLK,
 
 
 b2v_inst12 : mux21_32bit
-PORT MAP(i_sel => SYNTHESIZED_WIRE_4,
+PORT MAP(i_sel => wb_mem_to_reg,
 		 i_0 => wb_ALU_out,
 		 i_1 => wb_dmem_out,
 		 o_mux => wb_mux_out);
@@ -430,34 +438,34 @@ PORT MAP(i_sel => SYNTHESIZED_WIRE_4,
 
 b2v_inst13 : sign_extender_16_32
 PORT MAP(i_to_extend => id_instruction(15 DOWNTO 0),
-		 o_extended => SYNTHESIZED_WIRE_29);
+		 o_extended => SYNTHESIZED_WIRE_18);
 
 
 
 
 b2v_inst16 : sll_2
-PORT MAP(i_to_shift => SYNTHESIZED_WIRE_29,
+PORT MAP(i_to_shift => SYNTHESIZED_WIRE_18,
 		 o_shifted => ex_extended_immediate_sll2);
 
 
 b2v_inst17 : alu
-PORT MAP(ALU_OP => SYNTHESIZED_WIRE_6,
+PORT MAP(ALU_OP => SYNTHESIZED_WIRE_5,
 		 i_A => id_pc_plus_4,
 		 i_B => ex_extended_immediate_sll2,
-		 shamt => SYNTHESIZED_WIRE_7,
-		 ALU_out => SYNTHESIZED_WIRE_19);
+		 shamt => SYNTHESIZED_WIRE_6,
+		 ALU_out => next_pc_if_branch);
 
 
 b2v_inst18 : branch_comparator
-PORT MAP(i_rs_data => id_rs_data,
-		 i_rt_data => id_rt_data,
+PORT MAP(i_rs_data => branch_comparator_in_rs,
+		 i_rt_data => branch_comparator_in_rt,
 		 o_equal => o_branch_comparator);
 
 
 b2v_inst19 : if_id
 PORT MAP(CLK => i_CLK,
-		 id_flush => SYNTHESIZED_WIRE_8,
-		 id_stall => SYNTHESIZED_WIRE_9,
+		 id_flush => hazards_if_id_flush,
+		 id_stall => hazards_if_id_stall,
 		 ifid_reset => i_RESET,
 		 if_instruction => if_instruction,
 		 if_pc_plus_4 => if_pc_plus_4,
@@ -468,8 +476,8 @@ PORT MAP(CLK => i_CLK,
 
 b2v_inst20 : ex_mem
 PORT MAP(CLK => i_CLK,
-		 mem_flush => SYNTHESIZED_WIRE_30,
-		 mem_stall => SYNTHESIZED_WIRE_30,
+		 mem_flush => SYNTHESIZED_WIRE_19,
+		 mem_stall => SYNTHESIZED_WIRE_19,
 		 exmem_reset => i_RESET,
 		 ex_reg_dest => ex_reg_dest,
 		 ex_mem_to_reg => ex_mem_to_reg,
@@ -478,33 +486,33 @@ PORT MAP(CLK => i_CLK,
 		 ex_ALU_out => ex_ALU_out,
 		 ex_instruction => ex_instruction,
 		 ex_pc_plus_4 => ex_pc_plus_4,
-		 ex_rt_data => SYNTHESIZED_WIRE_31,
+		 ex_rt_data => SYNTHESIZED_WIRE_20,
 		 ex_write_reg_sel => ex_write_reg_sel,
-		 mem_reg_dest => SYNTHESIZED_WIRE_15,
-		 mem_mem_to_reg => SYNTHESIZED_WIRE_16,
+		 mem_reg_dest => mem_reg_dest,
+		 mem_mem_to_reg => mem_mem_to_reg,
 		 mem_mem_write => mem_mem_we,
 		 mem_reg_write => mem_reg_write,
 		 mem_ALU_out => mem_ALU_out,
-		 mem_instruction => SYNTHESIZED_WIRE_17,
-		 mem_pc_plus_4 => SYNTHESIZED_WIRE_18,
+		 mem_instruction => mem_instruction,
+		 mem_pc_plus_4 => mem_pc_plus_4,
 		 mem_rt_data => mem_rt_data,
 		 mem_write_reg_sel => mem_write_reg_sel);
 
 
 b2v_inst22 : mem_wb
 PORT MAP(CLK => i_CLK,
-		 wb_flush => SYNTHESIZED_WIRE_30,
-		 wb_stall => SYNTHESIZED_WIRE_30,
+		 wb_flush => SYNTHESIZED_WIRE_19,
+		 wb_stall => SYNTHESIZED_WIRE_19,
 		 memwb_reset => i_RESET,
-		 mem_reg_dest => SYNTHESIZED_WIRE_15,
-		 mem_mem_to_reg => SYNTHESIZED_WIRE_16,
+		 mem_reg_dest => mem_reg_dest,
+		 mem_mem_to_reg => mem_mem_to_reg,
 		 mem_reg_write => mem_reg_write,
 		 mem_ALU_out => mem_ALU_out,
 		 mem_dmem_out => mem_dmem_out,
-		 mem_instruction => SYNTHESIZED_WIRE_17,
-		 mem_pc_plus_4 => SYNTHESIZED_WIRE_18,
+		 mem_instruction => mem_instruction,
+		 mem_pc_plus_4 => mem_pc_plus_4,
 		 mem_write_reg_sel => mem_write_reg_sel,
-		 wb_mem_to_reg => SYNTHESIZED_WIRE_4,
+		 wb_mem_to_reg => wb_mem_to_reg,
 		 wb_reg_write => wb_reg_write,
 		 wb_ALU_out => wb_ALU_out,
 		 wb_dmem_out => wb_dmem_out,
@@ -512,11 +520,11 @@ PORT MAP(CLK => i_CLK,
 
 
 b2v_inst23 : three2_1
-PORT MAP(I0 => ex_rt_data,
+PORT MAP(I0 => ex_rt_data_before_fu,
 		 I1 => wb_mux_out,
 		 I2 => mem_ALU_out,
 		 SEL => forward_B,
-		 MP_out => SYNTHESIZED_WIRE_31);
+		 MP_out => SYNTHESIZED_WIRE_20);
 
 
 
@@ -524,15 +532,15 @@ PORT MAP(I0 => ex_rt_data,
 b2v_inst26 : mux21_32bit
 PORT MAP(i_sel => branch_taken,
 		 i_0 => id_pc_plus_4,
-		 i_1 => SYNTHESIZED_WIRE_19,
-		 o_mux => SYNTHESIZED_WIRE_20);
+		 i_1 => next_pc_if_branch,
+		 o_mux => SYNTHESIZED_WIRE_12);
 
 
 b2v_inst27 : mux21_32bit
-PORT MAP(i_sel => ex_jump,
-		 i_0 => SYNTHESIZED_WIRE_20,
-		 i_1 => combined_next_pc,
-		 o_mux => in_next_pc);
+PORT MAP(i_sel => id_jump,
+		 i_0 => SYNTHESIZED_WIRE_12,
+		 i_1 => combined_next_jump_pc,
+		 o_mux => next_pc_jump_or_branch);
 
 
 
@@ -552,9 +560,9 @@ PORT MAP(i_A => o_PC,
 
 
 b2v_inst32 : combine
-PORT MAP(i_inst => ex_instruction_sll2,
+PORT MAP(i_inst => id_instruction_sll2,
 		 i_next => id_pc_plus_4,
-		 o_combined => combined_next_pc);
+		 o_combined => combined_next_jump_pc);
 
 
 b2v_inst33 : main_control
@@ -571,20 +579,20 @@ PORT MAP(i_instruction => id_instruction,
 
 b2v_inst34 : mux21_32bit
 PORT MAP(i_sel => ex_ALU_src,
-		 i_0 => SYNTHESIZED_WIRE_31,
+		 i_0 => SYNTHESIZED_WIRE_20,
 		 i_1 => ex_extended_immediate,
 		 o_mux => ALU_in_B);
 
 
 b2v_inst36 : sll_2
 PORT MAP(i_to_shift => id_instruction,
-		 o_shifted => ex_instruction_sll2);
+		 o_shifted => id_instruction_sll2);
 
 
 b2v_inst37 : id_ex
 PORT MAP(CLK => i_CLK,
-		 ex_flush => SYNTHESIZED_WIRE_22,
-		 ex_stall => SYNTHESIZED_WIRE_23,
+		 ex_flush => hazards_id_ex_flush,
+		 ex_stall => SYNTHESIZED_WIRE_14,
 		 idex_reset => i_RESET,
 		 id_reg_dest => id_reg_dest,
 		 id_jump => id_jump,
@@ -594,7 +602,7 @@ PORT MAP(CLK => i_CLK,
 		 id_ALU_src => id_ALU_src,
 		 id_reg_write => id_reg_write,
 		 id_ALU_op => id_ALU_op,
-		 id_extended_immediate => SYNTHESIZED_WIRE_29,
+		 id_extended_immediate => SYNTHESIZED_WIRE_18,
 		 id_instruction => id_instruction,
 		 id_pc_plus_4 => id_pc_plus_4,
 		 id_rd_sel => id_instruction(15 DOWNTO 11),
@@ -603,7 +611,6 @@ PORT MAP(CLK => i_CLK,
 		 id_rt_data => id_rt_data,
 		 id_rt_sel => id_instruction(20 DOWNTO 16),
 		 ex_reg_dest => ex_reg_dest,
-		 ex_jump => ex_jump,
 		 ex_mem_to_reg => ex_mem_to_reg,
 		 ex_mem_write => ex_mem_write,
 		 ex_ALU_src => ex_ALU_src,
@@ -615,26 +622,15 @@ PORT MAP(CLK => i_CLK,
 		 ex_rd_sel => ex_rd_sel,
 		 ex_rs_data => ex_rs_data,
 		 ex_rs_sel => ex_rs_sel,
-		 ex_rt_data => ex_rt_data,
+		 ex_rt_data => ex_rt_data_before_fu,
 		 ex_rt_sel => ex_rt_sel);
 
 
 b2v_inst38 : mux21_32bit
-PORT MAP(i_sel => SYNTHESIZED_WIRE_25,
+PORT MAP(i_sel => branch_or_jump,
 		 i_0 => if_pc_plus_4,
-		 i_1 => in_next_pc,
-		 o_mux => SYNTHESIZED_WIRE_27);
-
-
-b2v_inst39 : forwarding
-PORT MAP(wb_reg_write => wb_reg_write,
-		 mem_reg_write => mem_reg_write,
-		 ex_rs_sel => ex_rs_sel,
-		 ex_rt_sel => ex_rt_sel,
-		 mem_write_reg_sel => mem_write_reg_sel,
-		 wb_write_reg_sel => wb_write_reg_sel,
-		 rs_mux_sel => forward_A,
-		 rt_mux_sel => forward_B);
+		 i_1 => next_pc_jump_or_branch,
+		 o_mux => next_PC);
 
 
 b2v_inst4 : register_file
@@ -649,7 +645,14 @@ PORT MAP(CLK => i_CLK,
 		 rt_data => id_rt_data);
 
 
-SYNTHESIZED_WIRE_25 <= id_jump OR id_branch;
+branch_or_jump <= id_jump OR id_branch;
+
+
+b2v_inst41 : mux21_32bit
+PORT MAP(i_sel => forwarding_branch_rt,
+		 i_0 => id_rt_data,
+		 i_1 => mem_ALU_out,
+		 o_mux => branch_comparator_in_rt);
 
 
 b2v_inst42 : hazard
@@ -662,14 +665,37 @@ PORT MAP(control_jump => id_jump,
 		 if_id_regRs => id_instruction(25 DOWNTO 21),
 		 if_id_regRt => id_instruction(20 DOWNTO 16),
 		 pc_stall => hazards_pc_stall,
-		 if_id_stall => SYNTHESIZED_WIRE_9,
-		 if_id_flush => SYNTHESIZED_WIRE_8,
-		 id_ex_flush => SYNTHESIZED_WIRE_22);
+		 if_id_stall => hazards_if_id_stall,
+		 if_id_flush => hazards_if_id_flush,
+		 id_ex_flush => hazards_id_ex_flush);
+
+
+b2v_inst43 : mux21_32bit
+PORT MAP(i_sel => forwarding_branch_rs,
+		 i_0 => id_rs_data,
+		 i_1 => mem_ALU_out,
+		 o_mux => branch_comparator_in_rs);
+
+
+b2v_inst47 : forwarding
+PORT MAP(wb_reg_write => wb_reg_write,
+		 mem_reg_write => mem_reg_write,
+		 ex_reg_write => ex_reg_write,
+		 ex_rs_sel => ex_rs_sel,
+		 ex_rt_sel => ex_rt_sel,
+		 id_rs_sel => id_instruction(25 DOWNTO 21),
+		 id_rt_sel => id_instruction(20 DOWNTO 16),
+		 mem_write_reg_sel => mem_write_reg_sel,
+		 wb_write_reg_sel => wb_write_reg_sel,
+		 branch_rs_mux_sel => forwarding_branch_rs,
+		 branch_rt_mux_sel => forwarding_branch_rt,
+		 rs_mux_sel => forward_A,
+		 rt_mux_sel => forward_B);
 
 
 b2v_inst5 : mux21_5bit
 PORT MAP(i_sel => ex_mem_to_reg,
-		 i_0 => SYNTHESIZED_WIRE_26,
+		 i_0 => SYNTHESIZED_WIRE_16,
 		 i_1 => ex_rt_sel,
 		 o_mux => ex_write_reg_sel);
 
@@ -678,7 +704,7 @@ b2v_inst6 : pc_reg
 PORT MAP(CLK => i_CLK,
 		 reset => i_RESET,
 		 stall => hazards_pc_stall,
-		 i_next_PC => SYNTHESIZED_WIRE_27,
+		 i_next_PC => next_PC,
 		 o_PC => o_PC);
 
 
@@ -692,7 +718,7 @@ b2v_inst8 : alu
 PORT MAP(ALU_OP => ex_ALU_op,
 		 i_A => ALU_in_A,
 		 i_B => ALU_in_B,
-		 shamt => SYNTHESIZED_WIRE_28,
+		 shamt => SYNTHESIZED_WIRE_17,
 		 ALU_out => ex_ALU_out);
 
 
